@@ -4,26 +4,6 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 	"strings"
 )
-func ReportSelection(reports []string) ([]string, error) {
-	var prompt = []*survey.Question{
-		{
-			Name: "letter",
-			Prompt: &survey.MultiSelect{
-				Message:  "Select Reports",
-				Options:  reports,
-				PageSize: 50,
-			},
-			Validate: survey.Required,
-		},
-	}
-	var selections []string
-
-	if err := survey.Ask(prompt, &selections); err != nil {
-		return nil, err
-	}
-
-	return selections, nil
-}
 
 var initQuestions = []*survey.Question{
 	{
@@ -84,4 +64,36 @@ func AskForConnectionDetails() (string, string, string, string, error) {
 	}
 
 	return strings.TrimSpace(answers.BaseUrlOldQRadar), strings.TrimSpace(answers.SecurityTokenOldQRadar), strings.TrimSpace(answers.BaseUrlNewQRadar), strings.TrimSpace(answers.SecurityTokenNewQRadar), nil
+}
+
+func AskForReportSelection(reports []string) ([]string, error) {
+	var prompt = []*survey.Question{
+		{
+			Name: "letter",
+			Prompt: &survey.MultiSelect{
+				Message:  "Select Reports",
+				Options:  reports,
+				PageSize: 50,
+			},
+			Validate: survey.Required,
+		},
+	}
+	var selections []string
+
+	if err := survey.Ask(prompt, &selections); err != nil {
+		return nil, err
+	}
+
+	return selections, nil
+}
+
+func AskForFullReport() (bool, error) {
+	fullReport := false
+	prompt := &survey.Confirm{
+		Message: "Do you want to run a full report?",
+	}
+	if err := survey.AskOne(prompt, &fullReport); err != nil {
+		return false, err
+	}
+	return fullReport, nil
 }
