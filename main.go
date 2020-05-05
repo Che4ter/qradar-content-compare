@@ -70,7 +70,7 @@ func generateReport(oldQradar *qradar.Client, newQradar *qradar.Client, reportTy
 	var reports []types.Report
 
 	switch reportType {
-	case reportType:
+	case "Tenants":
 		fmt.Println("compare tenants...")
 		tenantReport, err := comparator.CompareTenants(oldQradar, newQradar)
 		if err != nil {
