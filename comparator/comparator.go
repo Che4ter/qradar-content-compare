@@ -73,7 +73,8 @@ func CompareTenants(oldQRadar *qradar.Client, newQRadar *qradar.Client) (types.R
 		}
 	}
 	report.SameCount = sameCount
-
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 	return report, nil
 }
 
@@ -138,6 +139,8 @@ func CompareDomains(oldQRadar *qradar.Client, newQRadar *qradar.Client) (types.R
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -204,6 +207,8 @@ func CompareLogSourceGroups(oldQRadar *qradar.Client, newQRadar *qradar.Client) 
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -303,6 +308,8 @@ func CompareLogSources(oldQRadar *qradar.Client, newQRadar *qradar.Client) (type
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -370,6 +377,8 @@ func CompareRules(oldQRadar *qradar.Client, newQRadar *qradar.Client) (types.Rep
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -405,6 +414,8 @@ func CompareDSMMappings(oldQRadar *qradar.Client, newQRadar *qradar.Client) (typ
 	}
 
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -426,12 +437,28 @@ func CompareQidMappings(oldQRadar *qradar.Client, newQRadar *qradar.Client) (typ
 	report.ElementType = "QID Mappings"
 
 	for searchString, oldItem := range oldContent {
-		itemName := fmt.Sprintf("%s", *oldItem.Name)
+		itemName := fmt.Sprintf("QID Name: %s (%s)", *oldItem.Name, strconv.Itoa(*oldItem.QID.QID))
+		if oldItem.LogSourceTypeName != "empty" {
+			itemName += " Log Source Type: " + oldItem.LogSourceTypeName
+		}
+		if oldItem.LowLevelCategoryName != "" {
+			itemName += "Low Level Category: " + oldItem.LowLevelCategoryName
+		}
+
+		elementExists = false
 
 		if newItem, ok := newContent[searchString]; ok {
-			elementExists = false
+			elementExists = true
 
 			var different = types.DifferentRecord{}
+			if *oldItem.Name != *newItem.Name {
+				different.DifferentElements = append(different.DifferentElements, types.DifferentElement{
+					Name:     "QID Name",
+					OldValue: *oldItem.Name,
+					NewValue: *newItem.Name,
+				})
+			}
+
 			if oldItem.LowLevelCategoryName != newItem.LowLevelCategoryName {
 				different.DifferentElements = append(different.DifferentElements, types.DifferentElement{
 					Name:     "Low Level Category Name",
@@ -473,6 +500,8 @@ func CompareQidMappings(oldQRadar *qradar.Client, newQRadar *qradar.Client) (typ
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -532,6 +561,8 @@ func CompareNetworkHierarchy(oldQRadar *qradar.Client, newQRadar *qradar.Client)
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -604,6 +635,8 @@ func CompareRuleGroups(oldQRadar *qradar.Client, newQRadar *qradar.Client) (type
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }
@@ -624,7 +657,7 @@ func CompareCustomProperties(oldQRadar *qradar.Client, newQRadar *qradar.Client)
 	var report = types.Report{}
 	report.ElementType = "Custom Properties"
 	for _, oldItem := range oldContent {
-		itemName := fmt.Sprintf("Identifier: %s (%s)", *oldItem.Identifier, *oldItem.Regex)
+		itemName := fmt.Sprintf("Identifier: %s (Log Source Type: %s, Regex: %s)", *oldItem.Identifier, oldItem.LogSourceTypeName, *oldItem.Regex)
 		elementExists = false
 		for _, newItem := range newContent {
 			if *oldItem.Identifier == *newItem.Identifier {
@@ -688,6 +721,8 @@ func CompareCustomProperties(oldQRadar *qradar.Client, newQRadar *qradar.Client)
 		}
 	}
 	report.SameCount = sameCount
+	report.OldCount = len(oldContent)
+	report.NewCount = len(newContent)
 
 	return report, nil
 }

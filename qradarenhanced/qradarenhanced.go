@@ -179,7 +179,7 @@ func GetQIDsResolved(qRadar *qradar.Client) (map[string]types.QIDsResolved, erro
 			qidResolved.LowLevelCategoryName = lowLevelCategories[*qid.LowLevelCategoryID]
 		}
 
-		qIDsResolved[*qid.Name] = qidResolved
+		qIDsResolved[*qid.Name+strconv.Itoa(*qid.QID)] = qidResolved
 	}
 
 	return qIDsResolved, nil

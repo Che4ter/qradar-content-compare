@@ -61,5 +61,3 @@ The utility currently checks:
   - QID Name
   - Regex
   - Enabled
-
-

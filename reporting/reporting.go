@@ -70,6 +70,8 @@ func ReportToFile(report types.Report) error {
 
 	fmt.Fprintln(file, "Report for: ", report.ElementType)
 	fmt.Fprintln(file,"Records OK: " + strconv.Itoa(report.SameCount))
+	fmt.Fprintln(file,"Records in old QRadar: " + strconv.Itoa(report.OldCount))
+	fmt.Fprintln(file,"Records in new QRadar: " + strconv.Itoa(report.NewCount))
 
 	if len(report.MissingRecords) > 0 {
 		fmt.Fprintln(file, "")

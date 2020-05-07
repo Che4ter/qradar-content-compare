@@ -202,6 +202,8 @@ type DifferentPropertyExpressionRegex struct {
 type Report struct {
 	ElementType      string
 	SameCount        int
+	OldCount		 int
+	NewCount		 int
 	MissingRecords   []string
 	DifferentRecords []DifferentRecord
 }
