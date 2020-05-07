@@ -363,6 +363,13 @@ func CompareRules(oldQRadar *qradar.Client, newQRadar *qradar.Client) (types.Rep
 						NewValue: strconv.Itoa(len(newItem.TestDefinitions.Test)),
 					})
 				}
+				if *oldItem.RuleWithData.Enabled != *newItem.RuleWithData.Enabled {
+					different.DifferentElements = append(different.DifferentElements, types.DifferentElement{
+						Name:     "Rule Enabled",
+						OldValue: strconv.FormatBool(*oldItem.RuleWithData.Enabled),
+						NewValue: strconv.FormatBool(*newItem.RuleWithData.Enabled),
+					})
+				}
 				if len(different.DifferentElements) > 0 {
 					different.RecordName = itemName
 					report.DifferentRecords = append(report.DifferentRecords, different)
