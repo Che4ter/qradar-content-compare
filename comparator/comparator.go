@@ -294,6 +294,15 @@ func CompareLogSources(oldQRadar *qradar.Client, newQRadar *qradar.Client) (type
 						NewValue: strconv.FormatBool(*newItem.CoalesceEvents),
 					})
 				}
+
+				if *oldItem.Status.Status != *newItem.Status.Status {
+					different.DifferentElements = append(different.DifferentElements, types.DifferentElement{
+						Name:     "Status",
+						OldValue: *oldItem.Status.Status,
+						NewValue: *newItem.Status.Status,
+					})
+				}
+
 				if len(different.DifferentElements) > 0 {
 					different.RecordName = itemName
 					report.DifferentRecords = append(report.DifferentRecords, different)
@@ -344,11 +353,18 @@ func CompareRules(oldQRadar *qradar.Client, newQRadar *qradar.Client) (types.Rep
 						if testOld.Name == "com.q1labs.semsources.cre.tests.RuleMatch_Test" {
 							for _, testNew := range newItem.TestDefinitions.Test {
 								if testNew.Name == "com.q1labs.semsources.cre.tests.RuleMatch_Test" && testOld.Uid == testNew.Uid {
-									if testOld.Parameter[1].UserSelection != testNew.Parameter[1].UserSelection {
+									if strconv.Itoa(len(strings.Split(testOld.Parameter[1].UserSelection, ", "))) != strconv.Itoa(len(strings.Split(testNew.Parameter[1].UserSelection, ", "))) {
 										different.DifferentElements = append(different.DifferentElements, types.DifferentElement{
 											Name:     "Has different Number Building Blocks",
 											OldValue: strconv.Itoa(len(strings.Split(testOld.Parameter[1].UserSelection, ", "))),
 											NewValue: strconv.Itoa(len(strings.Split(testNew.Parameter[1].UserSelection, ", "))),
+										})
+									}
+									if testOld.Parameter[1].UserSelection != testNew.Parameter[1].UserSelection {
+										different.DifferentElements = append(different.DifferentElements, types.DifferentElement{
+											Name:     "Has different Building Blocks Ids",
+											OldValue: testOld.Parameter[1].UserSelection,
+											NewValue: testNew.Parameter[1].UserSelection,
 										})
 									}
 									break
